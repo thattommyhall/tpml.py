@@ -32,10 +32,12 @@ PRIMITIVE_PROCEDURES = {
     Symbol("str="): prim_str_equal,
 }
 
+SELF_EVALUATING = list(PRIMITIVE_PROCEDURES.keys()) + [Symbol("t"), Symbol("f")]
+
 
 def is_self_evaluating(exp):
     # pylint: disable-next=unidiomatic-typecheck
-    return type(exp) == str or (isinstance(exp, Symbol) and exp in PRIMITIVE_PROCEDURES)
+    return type(exp) == str or (isinstance(exp, Symbol) and exp in SELF_EVALUATING)
     # (Symbol is an instance of str too)
 
 
@@ -44,7 +46,7 @@ def is_begin(exp):
 
 
 def is_variable(exp):
-    return isinstance(exp, Symbol) and not exp in PRIMITIVE_PROCEDURES
+    return isinstance(exp, Symbol) and not exp in SELF_EVALUATING
 
 
 def is_def(exp):
@@ -59,6 +61,10 @@ def is_application(exp):
     return isinstance(exp, list)
 
 
+def is_if(exp):
+    return isinstance(exp, list) and len(exp) in [3, 4] and exp[0] == Symbol("if")
+
+
 # pylint: disable-next=redefined-builtin
 def eval(exp, env):
     if is_self_evaluating(exp):
@@ -70,6 +76,14 @@ def eval(exp, env):
         env[name] = eval(value, env)
     elif is_begin(exp):
         return eval_sequence(exp[1:], env)
+    elif is_if(exp):
+        test, consequent = exp[1], exp[2]
+        if eval(test, env) == Symbol("t"):
+            return eval(consequent, env)
+        if len(exp) == 4:
+            alternative = exp[3]
+            return eval(alternative, env)
+        return Symbol("Nothing")
     elif is_lambda(exp):
         params, body = exp[1], exp[2]
         return ("procedure", params, body, env)
