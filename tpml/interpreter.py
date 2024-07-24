@@ -50,11 +50,11 @@ def is_variable(exp):
 
 
 def is_def(exp):
-    return len(exp) == 3 and exp[0] == Symbol("define")
+    return isinstance(exp, list) and len(exp) == 3 and exp[0] == Symbol("define")
 
 
 def is_lambda(exp):
-    return len(exp) == 3 and exp[0] == Symbol("lambda")
+    return isinstance(exp, list) and len(exp) == 3 and exp[0] == Symbol("lambda")
 
 
 def is_application(exp):
