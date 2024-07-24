@@ -36,7 +36,15 @@ def concat(*args):
     return "".join(args)
 
 
-PRIMITIVE_PROCEDURES = {Symbol("concat"): concat}
+class SchemeError(Exception):
+    pass
+
+
+def prim_raise(message):
+    raise SchemeError(message)
+
+
+PRIMITIVE_PROCEDURES = {Symbol("concat"): concat, Symbol("raise"): prim_raise}
 
 
 # pylint: disable-next=redefined-builtin

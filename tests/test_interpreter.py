@@ -1,7 +1,8 @@
 from sexpdata import loads, Symbol
+from pytest import raises
 
 # pylint: disable-next=redefined-builtin
-from tpml.interpreter import eval, concat
+from tpml.interpreter import eval, concat, SchemeError
 
 
 def assert_result(s, value, env=None):
@@ -40,6 +41,11 @@ def test_lambda():
 
 def test_apply_primitive():
     assert eval(loads('(concat "Hello " "World")'), {}) == "Hello World"
+
+
+def test_raises():
+    with raises(SchemeError):
+        eval(loads('(raise "TestError")'), {})
 
 
 def test_apply():
