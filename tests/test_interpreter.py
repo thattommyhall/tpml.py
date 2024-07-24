@@ -2,7 +2,8 @@ from sexpdata import loads, Symbol
 from pytest import raises
 
 # pylint: disable-next=redefined-builtin
-from tpml.interpreter import eval, concat, SchemeError
+from tpml.interpreter import eval, concat, SchemeError, is_begin
+from tpml.io import load_scm
 
 
 def assert_result(s, value, env=None):
@@ -52,3 +53,9 @@ def test_apply():
     test_sexp = """((lambda (x y) (concat x y))
                     "Hello " "World")"""
     assert eval(loads(test_sexp), {}) == "Hello World"
+
+
+def test_begin():
+    exp = load_scm("tests/scm/begin.scm")
+    assert is_begin(exp)
+    assert eval(exp, {}) == "begin somewhere"

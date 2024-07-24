@@ -8,6 +8,10 @@ def is_self_evaluating(exp):
     # (Symbol is an instance of str too)
 
 
+def is_begin(exp):
+    return isinstance(exp, list) and exp[0] == Symbol("begin")
+
+
 def is_variable(exp):
     return isinstance(exp, Symbol) and not exp in PRIMITIVE_PROCEDURES
 
@@ -56,6 +60,8 @@ def eval(exp, env):
     elif is_def(exp):
         name, value = unpack_def_exp(exp)
         env[name] = eval(value, env)
+    elif is_begin(exp):
+        return eval_sequence(exp[1:], env)
     elif is_lambda(exp):
         params, body = unpack_lambda_exp(exp)
         return ("procedure", params, body, env)
