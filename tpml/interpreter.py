@@ -13,7 +13,7 @@ def is_variable(exp):
 
 
 def is_def(exp):
-    return len(exp) == 3 and exp[0] == Symbol("def")
+    return len(exp) == 3 and exp[0] == Symbol("define")
 
 
 def unpack_def_exp(exp):
