@@ -20,16 +20,8 @@ def is_def(exp):
     return len(exp) == 3 and exp[0] == Symbol("define")
 
 
-def unpack_def_exp(exp):
-    return exp[1], exp[2]
-
-
 def is_lambda(exp):
     return len(exp) == 3 and exp[0] == Symbol("lambda")
-
-
-def unpack_lambda_exp(exp):
-    return exp[1], exp[2]
 
 
 def is_application(exp):
@@ -58,12 +50,12 @@ def eval(exp, env):
     elif is_variable(exp):
         return env[exp]
     elif is_def(exp):
-        name, value = unpack_def_exp(exp)
+        name, value = exp[1], exp[2]
         env[name] = eval(value, env)
     elif is_begin(exp):
         return eval_sequence(exp[1:], env)
     elif is_lambda(exp):
-        params, body = unpack_lambda_exp(exp)
+        params, body = exp[1], exp[2]
         return ("procedure", params, body, env)
     elif is_application(exp):
         operator = eval(exp[0], env)
