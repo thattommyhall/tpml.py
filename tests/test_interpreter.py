@@ -2,7 +2,7 @@ from sexpdata import loads, Symbol
 from pytest import raises
 
 # pylint: disable-next=redefined-builtin
-from tpml.interpreter import eval, concat, SchemeError, is_begin
+from tpml.interpreter import eval, concat, SchemeError, is_begin, str_equal
 from tpml.io import load_scm
 
 
@@ -59,3 +59,9 @@ def test_begin():
     exp = load_scm("tests/scm/begin.scm")
     assert is_begin(exp)
     assert eval(exp, {}) == "begin somewhere"
+
+def test_str_equal():
+    assert str_equal("one", "one", "one")
+    assert not str_equal("one", "two", "one")
+
+    assert eval(loads('(str= "one" "one" "one")'), {}) == Symbol("t")

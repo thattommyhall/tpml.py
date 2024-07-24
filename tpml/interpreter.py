@@ -2,6 +2,37 @@ from sexpdata import Symbol
 from toolz.dicttoolz import merge
 
 
+def concat(*args):
+    return "".join(args)
+
+
+def str_equal(*args):
+    first = args[0]
+    return all([s == first for s in args])
+
+
+def prim_str_equal(*args):
+    if str_equal(*args):
+        return Symbol("t")
+    else:
+        return Symbol("f")
+
+
+class SchemeError(Exception):
+    pass
+
+
+def prim_raise(message):
+    raise SchemeError(message)
+
+
+PRIMITIVE_PROCEDURES = {
+    Symbol("concat"): concat,
+    Symbol("raise"): prim_raise,
+    Symbol("str="): prim_str_equal,
+}
+
+
 def is_self_evaluating(exp):
     # pylint: disable-next=unidiomatic-typecheck
     return type(exp) == str or (isinstance(exp, Symbol) and exp in PRIMITIVE_PROCEDURES)
@@ -26,21 +57,6 @@ def is_lambda(exp):
 
 def is_application(exp):
     return isinstance(exp, list)
-
-
-def concat(*args):
-    return "".join(args)
-
-
-class SchemeError(Exception):
-    pass
-
-
-def prim_raise(message):
-    raise SchemeError(message)
-
-
-PRIMITIVE_PROCEDURES = {Symbol("concat"): concat, Symbol("raise"): prim_raise}
 
 
 # pylint: disable-next=redefined-builtin
