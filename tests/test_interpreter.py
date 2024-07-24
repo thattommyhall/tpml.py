@@ -20,7 +20,7 @@ def test_var_lookup():
     assert eval(Symbol("a"), {Symbol("a"): 3}) == 3
 
 
-def test_deine():
+def test_define():
     env = {}
     exp = loads('(define a "hello")')
     eval(exp, env)
