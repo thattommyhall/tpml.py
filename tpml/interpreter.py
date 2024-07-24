@@ -74,8 +74,6 @@ def eval(exp, env):
     elif is_def(exp):
         name, value = exp[1], exp[2]
         env[name] = eval(value, env)
-    elif is_begin(exp):
-        return eval_sequence(exp[1:], env)
     elif is_if(exp):
         test, consequent = exp[1], exp[2]
         if eval(test, env) == Symbol("t"):
@@ -87,6 +85,8 @@ def eval(exp, env):
     elif is_lambda(exp):
         params, body = exp[1], exp[2]
         return ("procedure", params, body, env)
+    elif is_begin(exp):
+        return eval_sequence(exp[1:], env)
     elif is_application(exp):
         operator = eval(exp[0], env)
         operands = [eval(operand, env) for operand in exp[1:]]
