@@ -68,9 +68,7 @@ def eval(exp, env):
 def eval_sequence(exps, env):
     result = None
     for exp in exps:
-        print(exp)
         result = eval(exp, env)
-        print(result)
     return result
 
 
