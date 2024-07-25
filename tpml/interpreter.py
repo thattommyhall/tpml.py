@@ -92,7 +92,7 @@ def eval(exp, env):
         operands = [eval(operand, env) for operand in exp[1:]]
         return apply(operator, operands)
     else:
-        raise RuntimeError(f"Eval {repr(exp)} in {repr(env)}")
+        raise RuntimeError(f"Cannot eval: {repr(exp)}")
 
 
 def eval_sequence(exps, env):
