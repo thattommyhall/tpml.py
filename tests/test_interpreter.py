@@ -73,5 +73,8 @@ def test_if():
 
 
 def test_datastructures():
-    assert eval(load_scm("tests/scm/car.scm"), {}) == "left"
-    assert eval(load_scm("tests/scm/cdr.scm"), {}) == "right"
+    preamble = load_scm("scm/datastructures.scm")
+    env = {}
+    eval(preamble, env)
+    assert eval(loads('(car (cons "left" "right"))'), env) == "left"
+    assert eval(loads('(cdr (cons "left" "right"))'), env) == "right"
