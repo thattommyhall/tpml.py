@@ -70,3 +70,8 @@ def test_str_equal():
 
 def test_if():
     assert eval(loads('(if #t "was true")', true=None), {}) == "was true"
+
+
+def test_datastructures():
+    assert eval(load_scm("tests/scm/car.scm"), {}) == "left"
+    assert eval(load_scm("tests/scm/cdr.scm"), {}) == "right"
