@@ -35,6 +35,14 @@ PRIMITIVE_PROCEDURES = {
 SELF_EVALUATING = list(PRIMITIVE_PROCEDURES.keys()) + [Symbol("#t"), Symbol("#f")]
 
 
+def is_procedure(exp):
+    return isinstance(exp, tuple) and exp[0] == "procedure"
+
+
+def is_primitive(exp):
+    return isinstance(exp, Symbol) and exp in PRIMITIVE_PROCEDURES
+
+
 def is_self_evaluating(exp):
     # pylint: disable-next=unidiomatic-typecheck
     return type(exp) == str or (isinstance(exp, Symbol) and exp in SELF_EVALUATING)
@@ -102,18 +110,6 @@ def eval_sequence(exps, env):
     return result
 
 
-def is_procedure(exp):
-    return isinstance(exp, tuple) and exp[0] == "procedure"
-
-
-def is_primitive(exp):
-    return isinstance(exp, Symbol) and exp in PRIMITIVE_PROCEDURES
-
-
-def apply_primitive(procedure, args):
-    return PRIMITIVE_PROCEDURES[procedure](*args)
-
-
 def apply(procedure, args):
     if is_primitive(procedure):
         return apply_primitive(procedure, args)
@@ -123,3 +119,7 @@ def apply(procedure, args):
         return eval(body, fn_env)
 
     raise RuntimeError(f"Apply: {repr(procedure)} to {repr(args)}")
+
+
+def apply_primitive(procedure, args):
+    return PRIMITIVE_PROCEDURES[procedure](*args)
