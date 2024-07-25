@@ -49,58 +49,55 @@ def is_self_evaluating(exp):
     # (Symbol is an instance of str too)
 
 
-def is_begin(exp):
-    return isinstance(exp, list) and exp[0] == Symbol("begin")
-
-
 def is_variable(exp):
     return isinstance(exp, Symbol) and not exp in SELF_EVALUATING
 
 
+def is_begin(exp):
+    return exp[0] == Symbol("begin")
+
+
 def is_def(exp):
-    return isinstance(exp, list) and len(exp) == 3 and exp[0] == Symbol("define")
+    return len(exp) == 3 and exp[0] == Symbol("define")
 
 
 def is_lambda(exp):
-    return isinstance(exp, list) and len(exp) == 3 and exp[0] == Symbol("lambda")
-
-
-def is_application(exp):
-    return isinstance(exp, list)
+    return len(exp) == 3 and exp[0] == Symbol("lambda")
 
 
 def is_if(exp):
-    return isinstance(exp, list) and len(exp) in [3, 4] and exp[0] == Symbol("if")
+    return len(exp) in [3, 4] and exp[0] == Symbol("if")
 
 
 # pylint: disable-next=redefined-builtin
 def eval(exp, env):
     if is_self_evaluating(exp):
         return exp
-    elif is_variable(exp):
+    if is_variable(exp):
         return env[exp]
-    elif is_def(exp):
-        name, value = exp[1], exp[2]
-        env[name] = eval(value, env)
-    elif is_if(exp):
-        test, consequent = exp[1], exp[2]
-        if eval(test, env) == Symbol("#t"):
-            return eval(consequent, env)
-        if len(exp) == 4:
-            alternative = exp[3]
-            return eval(alternative, env)
-        return Symbol("Nothing")
-    elif is_lambda(exp):
-        params, body = exp[1], exp[2]
-        return ("procedure", params, body, env)
-    elif is_begin(exp):
-        return eval_sequence(exp[1:], env)
-    elif is_application(exp):
-        operator = eval(exp[0], env)
-        operands = [eval(operand, env) for operand in exp[1:]]
-        return apply(operator, operands)
-    else:
-        raise RuntimeError(f"Cannot eval: {repr(exp)}")
+    if isinstance(exp, list):
+        if is_def(exp):
+            name, value = exp[1], exp[2]
+            env[name] = eval(value, env)
+            return
+        elif is_if(exp):
+            test, consequent = exp[1], exp[2]
+            if eval(test, env) == Symbol("#t"):
+                return eval(consequent, env)
+            if len(exp) == 4:
+                alternative = exp[3]
+                return eval(alternative, env)
+            return Symbol("Nothing")
+        elif is_lambda(exp):
+            params, body = exp[1], exp[2]
+            return ("procedure", params, body, env)
+        elif is_begin(exp):
+            return eval_sequence(exp[1:], env)
+        else:  # Must be an application
+            operator = eval(exp[0], env)
+            operands = [eval(operand, env) for operand in exp[1:]]
+            return apply(operator, operands)
+    raise RuntimeError(f"Cannot eval: {repr(exp)}")
 
 
 def eval_sequence(exps, env):
