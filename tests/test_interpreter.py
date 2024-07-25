@@ -65,8 +65,8 @@ def test_str_equal():
     assert str_equal("one", "one", "one")
     assert not str_equal("one", "two", "one")
 
-    assert eval(loads('(str= "one" "one" "one")'), {}) == Symbol("t")
+    assert eval(loads('(str= "one" "one" "one")'), {}) == Symbol("#t")
 
 
 def test_if():
-    assert eval(loads('(if t "was true")', true=None), {}) == "was true"
+    assert eval(loads('(if #t "was true")', true=None), {}) == "was true"

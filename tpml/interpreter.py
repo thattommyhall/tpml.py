@@ -13,9 +13,9 @@ def prim_concat(*args):
 
 def prim_str_equal(*args):
     if str_equal(*args):
-        return Symbol("t")
+        return Symbol("#t")
     else:
-        return Symbol("f")
+        return Symbol("#f")
 
 
 class SchemeError(Exception):
@@ -32,7 +32,7 @@ PRIMITIVE_PROCEDURES = {
     Symbol("str="): prim_str_equal,
 }
 
-SELF_EVALUATING = list(PRIMITIVE_PROCEDURES.keys()) + [Symbol("t"), Symbol("f")]
+SELF_EVALUATING = list(PRIMITIVE_PROCEDURES.keys()) + [Symbol("#t"), Symbol("#f")]
 
 
 def is_self_evaluating(exp):
@@ -76,7 +76,7 @@ def eval(exp, env):
         env[name] = eval(value, env)
     elif is_if(exp):
         test, consequent = exp[1], exp[2]
-        if eval(test, env) == Symbol("t"):
+        if eval(test, env) == Symbol("#t"):
             return eval(consequent, env)
         if len(exp) == 4:
             alternative = exp[3]
