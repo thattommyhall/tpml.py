@@ -4,7 +4,7 @@ from pprint import pp
 from sexpdata import loads as readsexp, Symbol
 
 from tpml.interpreter import eval
-
+from tpml.io import load_scm
 import sys
 
 sys.ps1 = "> "
@@ -21,7 +21,11 @@ def canparse(s):
 
 class Repl(code.InteractiveConsole):
     def __init__(self):
-        self.env = {}
+        env = {}
+        for filename in ["scm/church.scm", "scm/datastructures.scm"]:
+            exp = load_scm(filename)
+            eval(exp, env)
+        self.env = env
         super().__init__()
 
     def runsource(self, source, filename="<input>", symbol="single"):
