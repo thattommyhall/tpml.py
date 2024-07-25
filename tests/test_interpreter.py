@@ -2,7 +2,7 @@ from sexpdata import loads, Symbol
 from pytest import raises
 
 # pylint: disable-next=redefined-builtin
-from tpml.interpreter import eval, concat, SchemeError, is_begin, str_equal
+from tpml.interpreter import eval, prim_concat, SchemeError, is_begin, str_equal
 from tpml.io import load_scm
 
 
@@ -28,7 +28,7 @@ def test_define():
 
 
 def test_concat():
-    assert concat("Hello ", "World") == "Hello World"
+    assert prim_concat("Hello ", "World") == "Hello World"
 
 
 def test_lambda():

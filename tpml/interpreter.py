@@ -2,13 +2,13 @@ from sexpdata import Symbol
 from toolz.dicttoolz import merge
 
 
-def concat(*args):
-    return "".join(args)
-
-
 def str_equal(*args):
     first = args[0]
     return all([s == first for s in args])
+
+
+def prim_concat(*args):
+    return "".join(args)
 
 
 def prim_str_equal(*args):
@@ -27,7 +27,7 @@ def prim_raise(message):
 
 
 PRIMITIVE_PROCEDURES = {
-    Symbol("concat"): concat,
+    Symbol("concat"): prim_concat,
     Symbol("raise"): prim_raise,
     Symbol("str="): prim_str_equal,
 }
