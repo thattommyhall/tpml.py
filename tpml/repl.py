@@ -1,10 +1,11 @@
 import code
 import readline
 from pprint import pp
-from sexpdata import loads as readsexp, Symbol
 
+
+from sexpdata import Symbol
 from tpml.interpreter import eval
-from tpml.io import load_scm
+from tpml.io import load_scm, readsexp
 import sys
 
 sys.ps1 = "> "
