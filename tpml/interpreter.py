@@ -1,6 +1,8 @@
 from sexpdata import Symbol
 from toolz.dicttoolz import merge
+from dataclasses import dataclass
 import sys
+
 sys.setrecursionlimit(2**20)
 
 
@@ -20,6 +22,16 @@ def prim_str_equal(*args):
         return Symbol("#f")
 
 
+@dataclass
+class SchemeProcedure:
+    params: list
+    body: list
+    env: dict
+
+    def __repr__(self) -> str:
+        return {"params": self.params, "body": self.body}.__repr__()
+
+
 class SchemeError(Exception):
     pass
 
@@ -35,10 +47,6 @@ PRIMITIVE_PROCEDURES = {
 }
 
 SELF_EVALUATING = list(PRIMITIVE_PROCEDURES.keys()) + [Symbol("#t"), Symbol("#f")]
-
-
-def is_procedure(exp):
-    return isinstance(exp, tuple) and exp[0] == "procedure"
 
 
 def is_primitive(exp):
@@ -92,10 +100,10 @@ def eval(exp, env):
             return Symbol("Nothing")
         elif is_lambda(exp):
             params, body = exp[1], exp[2]
-            return ("procedure", params, body, env)
+            return SchemeProcedure(params, body, env)
         elif is_begin(exp):
             return eval_sequence(exp[1:], env)
-        else:  # Must be an application
+        else:  # Must be an application at this point
             operator = eval(exp[0], env)
             operands = [eval(operand, env) for operand in exp[1:]]
             return apply(operator, operands)
@@ -112,10 +120,9 @@ def eval_sequence(exps, env):
 def apply(procedure, args):
     if is_primitive(procedure):
         return apply_primitive(procedure, args)
-    elif is_procedure(procedure):
-        _, params, body, env = procedure
-        fn_env = merge(env, dict(zip(params, args)))
-        return eval(body, fn_env)
+    elif isinstance(procedure, SchemeProcedure):
+        fn_env = merge(procedure.env, dict(zip(procedure.params, args)))
+        return eval(procedure.body, fn_env)
 
     raise RuntimeError(f"Apply: {repr(procedure)} to {repr(args)}")
 

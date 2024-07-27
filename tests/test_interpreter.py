@@ -2,7 +2,14 @@ from sexpdata import loads, Symbol
 from pytest import raises
 
 # pylint: disable-next=redefined-builtin
-from tpml.interpreter import eval, prim_concat, SchemeError, is_begin, str_equal
+from tpml.interpreter import (
+    eval,
+    prim_concat,
+    SchemeError,
+    is_begin,
+    str_equal,
+    SchemeProcedure,
+)
 from tpml.io import load_scm
 
 
@@ -32,8 +39,7 @@ def test_concat():
 
 
 def test_lambda():
-    assert eval(loads("(lambda (x y) (+ x y))"), {}) == (
-        "procedure",
+    assert eval(loads("(lambda (x y) (+ x y))"), {}) == SchemeProcedure(
         [Symbol("x"), Symbol("y")],
         [Symbol("+"), Symbol("x"), Symbol("y")],
         {},
