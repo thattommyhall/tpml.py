@@ -1,5 +1,7 @@
 from sexpdata import Symbol
 from toolz.dicttoolz import merge
+import sys
+sys.setrecursionlimit(2**20)
 
 
 def str_equal(*args):
